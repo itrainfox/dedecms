@@ -147,7 +147,7 @@ else if($dopost=='send')
         $msg = addslashes($qmsg).$msg;
     }
     $ischeck = ($cfg_feedbackcheck=='Y' ? 0 : 1);
-    $arctitle = addslashes($title);
+    $arctitle = addslashes(RemoveXSS($title));
     $typeid = intval($typeid);
     $feedbacktype = preg_replace("#[^0-9a-z]#i", "", $feedbacktype);
     $inquery = "INSERT INTO `#@__feedback`(`aid`,`typeid`,`username`,`arctitle`,`ip`,`ischeck`,`dtime`, `mid`,`bad`,`good`,`ftype`,`face`,`msg`)
