@@ -518,14 +518,22 @@ class SearchView
                 $ctag->GetAtt("tablewidth"))
                 );
             }
-            else if($tagname=="pagelist")
+            else if($ctag->GetName()=="pagelist")
             {
                 $list_len = trim($ctag->GetAtt("listsize"));
+                $ctag->GetAtt("listitem")=="" ? $listitem="index,pre,pageno,next,end,option" : $listitem=$ctag->GetAtt("listitem");
                 if($list_len=="")
                 {
                     $list_len = 3;
                 }
-                $this->dtp->Assign($tagid,$this->GetPageListDM($list_len));
+                if($ismake==0)
+                {
+                    $this->dtp->Assign($tagid,$this->GetPageListDM($list_len,$listitem));
+                }
+                else
+                {
+                    $this->dtp->Assign($tagid,$this->GetPageListST($list_len,$listitem));
+                }
             }
             else if($tagname=="likewords")
             {
@@ -803,117 +811,116 @@ class SearchView
      *
      * @access    public
      * @param     string  $list_len  列表宽度
+     * @param     string  $list_len  列表样式
      * @return    string
      */
-    function GetPageListDM($list_len)
+    function GetPageListDM($list_len,$listitem="index,end,pre,next,pageno,downurl,upurl,allnum")
     {
         global $oldkeyword;
-        $prepage="";
-        $nextpage="";
-        $prepagenum = $this->PageNo - 1;
-        $nextpagenum = $this->PageNo + 1;
-        if($list_len=="" || preg_match("/[^0-9]/", $list_len))
+        $prepage = $nextpage = '';
+        $prepagenum = $this->PageNo-1;
+        $nextpagenum = $this->PageNo+1;
+        if($list_len=='' || preg_match("/[^0-9]/", $list_len))
         {
             $list_len=3;
         }
-        $totalpage = ceil($this->TotalResult / $this->PageSize);
-        if($totalpage<=1 && $this->TotalResult>0)
+        $totalpage = ceil($this->TotalResult/$this->PageSize);
+        /* if($totalpage<=1 && $this->TotalResult>0)
         {
-            return "共1页/".$this->TotalResult."条记录";
+            return "<li><span class=\"pageinfo\">共 1 页/".$this->TotalResult." 条记录</span></li>\r\n";
         }
         if($this->TotalResult == 0)
         {
-            return "共0页/".$this->TotalResult."条记录";
-        }
-        $purl = $this->GetCurUrl();
+            return "<li><span class=\"pageinfo\">共 0 页/".$this->TotalResult." 条记录</span></li>\r\n";
+        } */
+        $maininfo = "<li><span class=\"pageinfo\">共 <strong>{$totalpage}</strong>页<strong>".$this->TotalResult."</strong>条</span></li>\r\n";
         
-        $oldkeyword = (empty($oldkeyword) ? $this->Keyword : $oldkeyword);
+        $purl = $this->GetCurUrl();
+        $geturl = "tid=".$this->TypeID."&TotalResult=".$this->TotalResult."&";
+        $purl .= '?'.$geturl;
+        
+        $optionlist = '';
+        //$hidenform = "<input type='hidden' name='tid' value='".$this->TypeID."'>\r\n";
+        //$hidenform .= "<input type='hidden' name='TotalResult' value='".$this->TotalResult."'>\r\n";
+        $allnum ="{$totalpage}";//总页面数字
 
-        //当结果超过限制时，重设结果页数
-        if($this->TotalResult > $this->SearchMaxRc)
-        {
-            $totalpage = ceil($this->SearchMaxRc/$this->PageSize);
-        }
-        $infos = "<td>共找到<b>".$this->TotalResult."</b>条记录/最大显示<b>{$totalpage}</b>页 </td>\r\n";
-        $geturl = "keyword=".urlencode($oldkeyword)."&searchtype=".$this->SearchType;
-        $hidenform = "<input type='hidden' name='keyword' value='".rawurldecode($oldkeyword)."'>\r\n";
-        $geturl .= "&channeltype=".$this->ChannelType."&orderby=".$this->OrderBy;
-        $hidenform .= "<input type='hidden' name='channeltype' value='".$this->ChannelType."'>\r\n";
-        $hidenform .= "<input type='hidden' name='orderby' value='".$this->OrderBy."'>\r\n";
-        $geturl .= "&kwtype=".$this->KType."&pagesize=".$this->PageSize;
-        $hidenform .= "<input type='hidden' name='kwtype' value='".$this->KType."'>\r\n";
-        $hidenform .= "<input type='hidden' name='pagesize' value='".$this->PageSize."'>\r\n";
-        $geturl .= "&typeid=".$this->TypeID."&TotalResult=".$this->TotalResult."&";
-        $hidenform .= "<input type='hidden' name='typeid' value='".$this->TypeID."'>\r\n";
-        $hidenform .= "<input type='hidden' name='TotalResult' value='".$this->TotalResult."'>\r\n";
-        $purl .= "?".$geturl;
-
+        
         //获得上一页和下一页的链接
         if($this->PageNo != 1)
         {
-            $prepage.="<td width='50'><a href='".$purl."PageNo=$prepagenum'>上一页</a></td>\r\n";
-            $indexpage="<td width='30'><a href='".$purl."PageNo=1'>首页</a></td>\r\n";
+            $prepage.="<li><a href='".$purl."PageNo=$prepagenum'>上一页</a></li>\r\n";
+            $indexpage="<li><a href='".$purl."PageNo=1'>首页</a></li>\r\n";
+            $upurl.="".$purl."PageNo=$prepagenum";//上一页链接
         }
         else
         {
-            $indexpage="<td width='30'>首页</td>\r\n";
+            $indexpage="<li><a>首页</a></li>\r\n";
+            $upurl.="javascript:void(0) \" onclick=\"javascript:alert('没有上一页了')";//上一页链接
         }
         if($this->PageNo!=$totalpage && $totalpage>1)
         {
-            $nextpage.="<td width='50'><a href='".$purl."PageNo=$nextpagenum'>下一页</a></td>\r\n";
-            $endpage="<td width='30'><a href='".$purl."PageNo=$totalpage'>末页</a></td>\r\n";
+            $nextpage.="<li><a href='".$purl."PageNo=$nextpagenum'>下一页</a></li>\r\n";
+            $endpage="<li><a href='".$purl."PageNo=$totalpage'>末页</a></li>\r\n";
+            $downurl.="".$purl."PageNo=$nextpagenum";//下一页链接
         }
         else
         {
-            $endpage="<td width='30'>末页</td>\r\n";
+            $endpage="<li><a>末页</a></li>\r\n";
+            $downurl.="javascript:void(0) \" onclick=\"javascript:alert('没有下一页了')";//下一页链接
         }
+
 
         //获得数字链接
         $listdd="";
+        $thisnum="";
         $total_list = $list_len * 2 + 1;
         if($this->PageNo >= $total_list)
         {
-            $j = $this->PageNo - $list_len;
-            $total_list = $this->PageNo + $list_len;
-            if($total_list > $totalpage)
+            $j = $this->PageNo-$list_len;
+            $total_list = $this->PageNo+$list_len;
+            if($total_list>$totalpage)
             {
-                $total_list = $totalpage;
+                $total_list=$totalpage;
             }
         }
         else
         {
             $j=1;
-            if($total_list > $totalpage)
+            if($total_list>$totalpage)
             {
-                $total_list = $totalpage;
+                $total_list=$totalpage;
             }
         }
-        for($j; $j<=$total_list; $j++)
+        for($j;$j<=$total_list;$j++)
         {
-            if($j == $this->PageNo)
+            if($j==$this->PageNo)
             {
-                $listdd.= "<td>$j&nbsp;</td>\r\n";
+                $listdd.= "<li class=\"thisclass\"><a>$j</a></li>\r\n";
+                $thisnum="$j";
             }
             else
             {
-                $listdd.="<td><a href='".$purl."PageNo=$j'>[".$j."]</a>&nbsp;</td>\r\n";
+                $listdd.="<li><a href='".$purl."PageNo=$j'>".$j."</a></li>\r\n";
             }
         }
-        $plist  =  "<table border='0' cellpadding='0' cellspacing='0'>\r\n";
-        $plist .= "<tr align='center' style='font-size:10pt'>\r\n";
-        $plist .= "<form name='pagelist' action='".$this->GetCurUrl()."'>$hidenform";
-        $plist .= $infos;
-        $plist .= $indexpage;
-        $plist .= $prepage;
-        $plist .= $listdd;
-        $plist .= $nextpage;
-        $plist .= $endpage;
-        if($totalpage>$total_list)
+        if($thisnum=="")//判断为空的时候
         {
-            $plist.="<td width='38'><input type='text' name='PageNo' style='width:28px;height:14px' value='".$this->PageNo."' /></td>\r\n";
-            $plist.="<td width='30'><input type='submit' name='plistgo' value='GO' style='width:30px;height:22px;font-size:9pt' /></td>\r\n";
+            $thisnum=0;
         }
-        $plist .= "</form>\r\n</tr>\r\n</table>\r\n";
+        $plist = '';
+        if(preg_match('/index/i', $listitem)) $plist .= $indexpage;
+        if(preg_match('/pre/i', $listitem)) $plist .= $prepage;
+        if(preg_match('/pageno/i', $listitem)) $plist .= $listdd;
+        if(preg_match('/next/i', $listitem)) $plist .= $nextpage;
+        if(preg_match('/end/i', $listitem)) $plist .= $endpage;
+        if(preg_match('/option/i', $listitem)) $plist .= $optionlist;
+        if(preg_match('/info/i', $listitem)) $plist .= $maininfo;
+        if(preg_match('/upurl/i', $listitem)) $plist .= $upurl;//上一页链接
+        if(preg_match('/downurl/i', $listitem)) $plist .= $downurl;//下一页链接
+        if(preg_match('/allnum/i', $listitem)) $plist .= $allnum;//总页面数字
+        if(preg_match('/thisnum/i', $listitem)) $plist .= $thisnum;//当前页面数字
+        
+
         return $plist;
     }
 
