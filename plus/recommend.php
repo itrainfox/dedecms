@@ -33,7 +33,7 @@ if($action=='')
             ShowMsg("无法把未知文档推荐给好友!","-1");
             exit();
         }
-        extract($arcRow, EXTR_SKIP);
+        extract($arcRow, EXTR_OVERWRITE);
     } else {
         $arcRow=$dsql->GetOne("SELECT s.*,t.* FROM `#@__member_stow` AS s LEFT JOIN `#@__member_stowtype` AS t ON s.type=t.stowname WHERE s.aid='$aid' AND s.type='$type'");
         if(!is_array($arcRow)){
@@ -41,7 +41,7 @@ if($action=='')
             exit();
         }
         $arcRow['arcurl']=$arcRow['indexurl']."=".$arcRow['aid'];
-        extract($arcRow, EXTR_SKIP);
+        extract($arcRow, EXTR_OVERWRITE);
     }
 }
 
@@ -77,6 +77,12 @@ else if($action=='send')
     ShowMsg("成功推荐一篇文章!",$arcurl);
     exit();
 }
-
+$arcRow = GetOneArchive($aid);
+if($arcRow['aid']=='') 
+{
+    ShowMsg("无法把未知文档推荐给好友!","-1");
+    exit();
+}
+extract($arcRow, EXTR_OVERWRITE);
 //显示模板(简单PHP文件)
 include(DEDETEMPLATE.'/plus/recommend.htm');
