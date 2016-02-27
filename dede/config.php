@@ -38,6 +38,19 @@ if($cuserLogin->getUserID()==-1)
     exit();
 }
 
+function XSSClean($val)
+{
+    if (is_array($val))
+    {
+        while (list($key) = each($val))
+        {
+            $val[$key] = XSSClean($val[$key]);
+        }
+        return $val;
+    }
+    return RemoveXss($val);
+}
+
 if($cfg_dede_log=='Y')
 {
     $s_nologfile = '_main|_list';

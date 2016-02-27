@@ -117,6 +117,17 @@ function CheckNotAllow()
     }
 }
 
+function FormatUsername($username)
+{
+    $username = str_replace("`","¡®",$username);
+    $username = str_replace("'","¡®",$username);
+    $username = str_replace("\"","¡°",$username);
+    $username = str_replace(",","£¬",$username);
+    $username = str_replace("(","£¨",$username);
+    $username = str_replace(")","£©",$username);
+    return addslashes($username);
+}
+
 /**
  * ÍøÕ¾»áÔ±µÇÂ¼Àà
  *
@@ -203,7 +214,7 @@ class MemberLogin
                 $this->M_LoginID = $this->fields['userid'];
                 $this->M_MbType = $this->fields['mtype'];
                 $this->M_Money = $this->fields['money'];
-                $this->M_UserName = $this->fields['uname'];
+                $this->M_UserName = FormatUsername($this->fields['uname']);
                 $this->M_Scores = $this->fields['scores'];
                 $this->M_Face = $this->fields['face'];
                 $this->M_Rank = $this->fields['rank'];
