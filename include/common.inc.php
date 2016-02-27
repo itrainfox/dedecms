@@ -234,7 +234,7 @@ $cfg_soft_devteam = 'DedeCMS官方团队';
 
 //文档的默认命名规则
 $art_shortname = $cfg_df_ext = '.html';
-$cfg_df_namerule = '{typedir}/{Y}/{M}{D}/{aid}'.$cfg_df_ext;
+$cfg_df_namerule = $cfg_arc_dir.'/{tid}/{aid}'.$cfg_df_ext;// 修改添加栏目时 默认文章命名规则,更符合SEO;
 
 //新建目录的权限，如果你使用别的属性，本程不保证程序能顺利在Linux或Unix系统运行
 if(isset($cfg_ftp_mkdir) && $cfg_ftp_mkdir=='Y')

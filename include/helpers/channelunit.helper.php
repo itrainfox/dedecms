@@ -248,8 +248,17 @@ if ( ! function_exists('GetTypeUrl'))
             }
             else
             {
-                if($cfg_typedir_df=='N' || $isdefault==0) $reurl = $typedir.'/'.$defaultname;
-                else $reurl = $typedir.'/';
+                if($cfg_typedir_df=='N' || $isdefault==0) $reurl = $typedir.'/'.$defaultname; // $isdefault==0 链接到列表第一页;$cfg_typedir_df=='N'栏目网址显示默认页
+                else 
+				{
+					//如果栏目默认页不为index.html，那么就在处带上填写的默认页名称，更能满足网站SEO需求
+					if($defaultname!="index.html")
+					{
+						$reurl = $typedir.'/'.$defaultname;
+					}else{
+						$reurl = $typedir.'/';
+					}
+				}
             }
         }
 
