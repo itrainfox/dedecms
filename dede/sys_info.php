@@ -168,6 +168,17 @@ EOT;
           </tr></table>';
     }
     exit;
+} else if ($dopost=='make_encode')
+{
+    $chars='abcdefghigklmnopqrstuvwxwyABCDEFGHIGKLMNOPQRSTUVWXWY0123456789';
+    $hash='';
+    $length = rand(28,32);
+    $max = strlen($chars) - 1;
+    for($i = 0; $i < $length; $i++) {
+        $hash .= $chars[mt_rand(0, $max)];
+    }
+    echo $hash;
+    exit();
 }
 
 include DedeInclude('templets/sys_info.htm');

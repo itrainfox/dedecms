@@ -4,6 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=<?php echo $cfg_soft_lang; ?>">
 <title>系统配置参数</title>
 <script language="javascript" src="../include/js/dedeajax2.js"></script>
+<script language="javascript" src="../include/js/jquery/jquery.js"></script>
 <script language="javascript">
 var searchconfig = false;
 function Nav()
@@ -46,6 +47,12 @@ function getSearch()
 	$Obj('_searchback').innerHTML = '<input name="searchbackBtn" type="button" value="返回" id="searchbackBtn" onclick="backSearch()"/>'
 	$Obj('_mainsearch').innerHTML = '';
 	searchconfig = true;
+}
+function resetCookieEncode()
+{
+  jQuery.get("sys_info.php?dopost=make_encode", function(data){
+    jQuery("#edit___cfg_cookie_encode").val(data);
+  });
 }
 </script>
 <link href="css/base.css" rel="stylesheet" type="text/css">
@@ -178,7 +185,11 @@ if($row['type']=='bool')
 	echo "<input type='text' name='edit___{$row['varname']}' id='edit___{$row['varname']}' value='{$row['value']}' style='width:30%'>";
 }else
 {
-	echo "<input type='text' name='edit___{$row['varname']}' id='edit___{$row['varname']}' value=\"".htmlspecialchars($row['value'])."\" style='width:80%'>";
+	$addstr='';
+	if ($row['varname']=='cfg_cookie_encode') {
+	  $addstr=' <a href="javascript:resetCookieEncode();" style="color:blue">[重新生成]</a>';
+	}
+	echo "<input type='text' name='edit___{$row['varname']}' id='edit___{$row['varname']}' value=\"".htmlspecialchars($row['value'])."\" style='width:80%'>{$addstr}";
 }
 ?></td>
        <td><?php echo $row['varname']?></td>
