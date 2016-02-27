@@ -6,7 +6,7 @@ AjaxHead();
 if(!function_exists('TestWriteable'))
 {
 	// 检测是否可写
-	function TestWriteable($d, $c=TRUE)
+	function TestWriteable($d, $c=false)
 	{
 		$tfile = '_write_able.txt';
 		$d = preg_replace("/\/$/", '', $d);
@@ -127,7 +127,7 @@ if(!function_exists('IsWritable'))
 				return false;
 			}
 		}
-		//@chmod($pathfile,0777);
+		@chmod($pathfile,0777);
 		$fp = @fopen($pathfile,'ab');
 		if ($fp===false) return false;
 		fclose($fp);
@@ -138,13 +138,13 @@ if(!function_exists('IsWritable'))
 
 // 检测权限
 $safeMsg = array();
-if(TestExecuteable(DEDEROOT.'/data',$cfg_basehost) || TestExecuteable(DEDEROOT.'/uploads',$cfg_basehost))
-{
-	$helpurl = "http://help.dedecms.com/install-use/server/2011/1109/2124.html";
-	$safeMsg[] = '目前data、uploads有执行.php权限，非常危险，需要立即取消目录的执行权限！
-	<a href="testenv.php" title="全面检测"><img src="images/btn_fullscan.gif" /></a>
-	<a href="'.$helpurl.'" style="color:blue;text-decoration:underline;" target="_blank">查看如何取消</a>';
-}
+//if(TestExecuteable(DEDEROOT.'/data',$cfg_basehost) || TestExecuteable(DEDEROOT.'/uploads',$cfg_basehost))
+//{
+//	$helpurl = "http://help.dedecms.com/install-use/server/2011/1109/2124.html";
+//	$safeMsg[] = '目前data、uploads有执行.php权限，非常危险，需要立即取消目录的执行权限！
+//	<a href="testenv.php" title="全面检测"><img src="images/btn_fullscan.gif" /></a>
+//	<a href="'.$helpurl.'" style="color:blue;text-decoration:underline;" target="_blank">查看如何取消</a>';
+//}
 $dirname = str_replace('index_body.php', '', strtolower($_SERVER['PHP_SELF']));
 if(preg_match("#[\\|/]dede[\\|/]#", $dirname))
 {
@@ -170,11 +170,11 @@ if($rs < 0)
 	$safeMsg[] = $msg;
 }
 
-if(PostHost($cfg_basehost.'/data/admin/ver.txt') === @file_get_contents(DEDEDATA.'/admin/ver.txt'))
-{
-	$helpurl = 'http://help.dedecms.com/install-use/apply/2011/1110/2129.html';
-	$safeMsg[] = '<font color="blue">强烈建议将data目录搬移到Web根目录以外；</font><a href="'.$helpurl.'" style="color:blue;text-decoration:underline;" target="_blank">查看如何搬迁</a>';
-}
+//if(PostHost($cfg_basehost.'/data/admin/ver.txt') === @file_get_contents(DEDEDATA.'/admin/ver.txt'))
+//{
+//	$helpurl = 'http://help.dedecms.com/install-use/apply/2011/1110/2129.html';
+//	$safeMsg[] = '<font color="blue">强烈建议将data目录搬移到Web根目录以外；</font><a href="'.$helpurl.'" style="color:blue;text-decoration:underline;" target="_blank">查看如何搬迁</a>';
+//}
 ?>
 <?php
 if(count($safeMsg) > 0)
