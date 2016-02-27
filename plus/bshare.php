@@ -114,7 +114,7 @@ function DownHost($host,$data='',$method='GET',$showagent=null,$port=null,$user=
 
 if ($dopost == 'getcode')
 {
-    $uuid = isset($uuid)? $uuid : '';
+    $uuid = isset($uuid)? RemoveXSS($uuid) : '';
     $codeOrder = 'qqmb%2csinaminiblog%2csohubai%2cbaiduhi%2crenren%2cbgoogle';
     $remoteUrl = 'http://updatenew.dedecms.com/base-v57/dedecms/plus_bshare.txt';
     $result = DownHost($remoteUrl);
