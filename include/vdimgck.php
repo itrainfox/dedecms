@@ -17,7 +17,7 @@ $config = array(
     'word_type'  => (int)$safe_codetype,   // 1:Êý×Ö  2:Ó¢ÎÄ   3:µ¥´Ê
     'img_width'   => $safe_wwidth,
     'use_boder'   => TRUE,
-    'font_file'   => dirname(__FILE__).'/data/fonts/ggbi.ttf',
+    'font_file'   => dirname(__FILE__).'/data/fonts/'.mt_rand(1,3).'.ttf',
     'wordlist_file'   => dirname(__FILE__).'/data/words/words.txt',
     'filter_type' => 5);
 $sessSavePath = DEDEDATA."/sessions/";
@@ -47,7 +47,7 @@ function echo_validate_image( $config = array() )
     $font_size   = isset($config['font_size']) ? $config['font_size'] : 14;
     $img_height  = isset($config['img_height']) ? $config['img_height'] : 24;
     $img_width   = isset($config['img_width']) ? $config['img_width'] : 68;
-    $font_file   = isset($config['font_file']) ? $config['font_file'] : PATH_DATA.'/data/font/ggbi.ttf';
+    $font_file   = isset($config['font_file']) ? $config['font_file'] : PATH_DATA.'/data/font/'.mt_rand(1,3).'.ttf';
     $use_boder   = isset($config['use_boder']) ? $config['use_boder'] : TRUE;
     $filter_type = isset($config['filter_type']) ? $config['filter_type'] : 0;
     
@@ -80,27 +80,13 @@ function echo_validate_image( $config = array() )
             $rndstring .= $c;
         }
     } else { 
-        $fp = @fopen($config['wordlist_file'], 'rb');
-        if (!$fp) return FALSE;
-
-        $fsize = filesize($config['wordlist_file']);
-        if ($fsize < 32) return FALSE;
-
-        if ($fsize < 128) 
-        {
-          $max = $fsize;
-        } else {
-          $max = 128;
+        $chars='abcdefghigklmnopqrstuvwxwyABCDEFGHIGKLMNOPQRSTUVWXWY0123456789';
+        $rndstring='';
+        $length = rand(4,4);
+        $max = strlen($chars) - 1;
+        for($i = 0; $i < $length; $i++) {
+            $rndstring .= $chars[mt_rand(0, $max)];
         }
-
-        fseek($fp, rand(0, $fsize - $max), SEEK_SET);
-        $data = fread($fp, 128);
-        fclose($fp);
-        $data = preg_replace("/\r?\n/", "\n", $data);
-
-        $start = strpos($data, "\n", rand(0, 100)) + 1; 
-        $end   = strpos($data, "\n", $start); 
-        $rndstring  = strtolower(substr($data, $start, $end - $start)); 
     }
     
     $_SESSION['securimage_code_value'] = strtolower($rndstring);
