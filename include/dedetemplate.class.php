@@ -455,6 +455,40 @@ class DedeTemplate
         fclose($fp);
     }
 
+    // ------------------------------------------------------------------------
+    
+    /**
+     * CheckDisabledFunctions
+     *
+     * COMMENT : CheckDisabledFunctions : 检查是否存在禁止的函数
+     *
+     * @access    public
+     * @param    string
+     * @return    bool
+     */
+    function CheckDisabledFunctions($str,&$errmsg='')
+    {
+        global $cfg_disable_funs;
+        $cfg_disable_funs = isset($cfg_disable_funs)? $cfg_disable_funs : 'phpinfo,eval,exec,passthru,shell_exec,system,proc_open,popen,curl_exec,curl_multi_exec,parse_ini_file,show_source,file_put_contents,fsockopen,fopen,fwrite';
+        // 模板引擎增加disable_functions
+        if (!defined('DEDEDISFUN')) {
+            $tokens = token_get_all_nl($str);
+            $disabled_functions = explode(',', $cfg_disable_funs);
+            foreach ($tokens as $token)
+            {
+                if (is_array($token))
+                {
+                    if ($token[0] = '306' && in_array($token[1], $disabled_functions)) 
+                    {
+                       $errmsg = 'DedeCMS Error:function disabled "'.$token[1].'" <a href="http://help.dedecms.com/install-use/apply/2013/0711/2324.html" target="_blank">more...</a>';
+                       return FALSE;
+                    }
+                }
+            }
+        }
+        return TRUE;
+    }
+
     /**
      *  解析模板并写缓存文件
      *
@@ -473,7 +507,16 @@ class DedeTemplate
                 }
                 $fp = fopen($this->cacheFile,'w') or dir("Write Cache File Error! ");
                 flock($fp,3);
-                fwrite($fp,trim($this->GetResult()));
+                $result = trim($this->GetResult());
+                $errmsg = '';
+                //var_dump($result);exit();
+                if (!$this->CheckDisabledFunctions($result, $errmsg)) 
+                {
+                    fclose($fp);
+                    @unlink($this->cacheFile);
+                    die($errmsg);
+                }
+                fwrite($fp,$result);
                 fclose($fp);
                 if(count($this->tpCfgs) > 0)
                 {

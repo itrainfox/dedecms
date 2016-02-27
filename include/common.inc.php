@@ -29,6 +29,33 @@ if (version_compare(PHP_VERSION, '5.3.0', '<'))
     set_magic_quotes_runtime(0);
 }
 
+if(version_compare(PHP_VERSION, '5.3.0', '>'))
+{
+    if(strtoupper(ini_get('request_order')) == 'GP') 
+    exit('DedeCMS Error: (PHP 5.3 and above) Please set \'request_order\' ini value to include C,G and P (recommended: \'CGP\') in php.ini,<a href="http://help.dedecms.com/install-use/apply/2013/0715/2325.html" target="_blank">more...</a>');
+}
+
+if (version_compare(PHP_VERSION, '5.4.0', '>=')) 
+{
+    if (!function_exists('session_register'))
+    {
+        function session_register()
+        { 
+            $args = func_get_args(); 
+            foreach ($args as $key){ 
+                $_SESSION[$key]=$GLOBALS[$key]; 
+            } 
+        } 
+        function session_is_registered($key)
+        {
+            return isset($_SESSION[$key]); 
+        }
+        function session_unregister($key){ 
+            unset($_SESSION[$key]); 
+        }
+    }
+}
+
 //是否启用mb_substr替换cn_substr来提高效率
 $cfg_is_mb = $cfg_is_iconv = FALSE;
 if(function_exists('mb_substr')) $cfg_is_mb = TRUE;
@@ -297,7 +324,7 @@ function __autoload($classname)
                 die ();
             }
         }
-}
+}
 
 //引入数据库类
 if ($GLOBALS['cfg_mysql_type'] == 'mysqli' && function_exists("mysqli_init"))
