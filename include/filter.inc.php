@@ -17,6 +17,7 @@
  * @param     string  $svar 过滤值
  * @return    string
  */
+$magic_quotes_gpc = ini_get('magic_quotes_gpc');
 function _FilterAll($fk, &$svar)
 {
     global $cfg_notallowstr,$cfg_replacestr;
@@ -39,7 +40,10 @@ function _FilterAll($fk, &$svar)
             $svar = preg_replace('/'.$cfg_replacestr.'/i', "***", $svar);
         }
     }
-    return addslashes($svar);
+    if (!$magic_quotes_gpc) {
+        $svar = addslashes($svar);
+    }
+    return $svar;
 }
 
 /* 对_GET,_POST,_COOKIE进行过滤 */
