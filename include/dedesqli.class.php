@@ -656,6 +656,7 @@ if (!function_exists('CheckSql'))
         OR strpos($clean,'$s$$s$')!== FALSE)
         {
             $fail = TRUE;
+            if(preg_match("#^create table#i",$clean)) $fail = FALSE;
             $error="unusual character";
         }
 
