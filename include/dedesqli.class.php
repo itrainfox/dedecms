@@ -652,7 +652,7 @@ if (!function_exists('CheckSql'))
         $clean .= substr($db_string, $old_pos);
         $clean = trim(strtolower(preg_replace(array('~\s+~s' ), array(' '), $clean)));
         
-        if (strpos($clean, '@') !== FALSE  OR strpos($clean,'char(')!== FALSE 
+        if (strpos($clean, '@') !== FALSE  OR strpos($clean,'char(')!== FALSE OR strpos($clean,'"')!== FALSE 
         OR strpos($clean,'$s$$s$')!== FALSE)
         {
             $fail = TRUE;
