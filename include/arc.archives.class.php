@@ -783,76 +783,106 @@ class Archives
         $this->Fields = '';
     }
 
-    /**
-     *  获取上一篇，下一篇链接
-     *
-     * @access    public
-     * @param     string  $gtype  获取类型  
-     *                    pre:上一篇  preimg:上一篇图片  next:下一篇  nextimg:下一篇图片
-     * @return    string
-     */
-    function GetPreNext($gtype='')
-    {
-        $rs = '';
-        if(count($this->PreNext)<2)
-        {
-            $aid = $this->ArcID;
-            $preR =  $this->dsql->GetOne("Select id From `#@__arctiny` where id<$aid And arcrank>-1 And typeid='{$this->Fields['typeid']}' order by id desc");
-            $nextR = $this->dsql->GetOne("Select id From `#@__arctiny` where id>$aid And arcrank>-1 And typeid='{$this->Fields['typeid']}' order by id asc");
-            $next = (is_array($nextR) ? " where arc.id={$nextR['id']} " : ' where 1>2 ');
-            $pre = (is_array($preR) ? " where arc.id={$preR['id']} " : ' where 1>2 ');
-            $query = "Select arc.id,arc.title,arc.shorttitle,arc.typeid,arc.ismake,arc.senddate,arc.arcrank,arc.money,arc.filename,arc.litpic,
-                        t.typedir,t.typename,t.namerule,t.namerule2,t.ispart,t.moresite,t.siteurl,t.sitepath
-                        from `#@__archives` arc left join #@__arctype t on arc.typeid=t.id  ";
-            $nextRow = $this->dsql->GetOne($query.$next);
-            $preRow = $this->dsql->GetOne($query.$pre);
-            if(is_array($preRow))
-            {
-                $mlink = GetFileUrl($preRow['id'],$preRow['typeid'],$preRow['senddate'],$preRow['title'],$preRow['ismake'],$preRow['arcrank'],
-                $preRow['namerule'],$preRow['typedir'],$preRow['money'],$preRow['filename'],$preRow['moresite'],$preRow['siteurl'],$preRow['sitepath']);
-                $this->PreNext['pre'] = "上一篇：<a href='$mlink'>{$preRow['title']}</a> ";
-                $this->PreNext['preimg'] = "<a href='$mlink'><img src=\"{$preRow['litpic']}\" alt=\"{$preRow['title']}\"/></a> "; 
-            }
-            else
-            {
-                $this->PreNext['pre'] = "上一篇：没有了 ";
-                $this->PreNext['preimg'] ="<img src=\"/templets/default/images/nophoto.jpg\" alt=\"对不起，没有上一图集了！\"/>";
-            }
-            if(is_array($nextRow))
-            {
-                $mlink = GetFileUrl($nextRow['id'],$nextRow['typeid'],$nextRow['senddate'],$nextRow['title'],$nextRow['ismake'],$nextRow['arcrank'],
-                $nextRow['namerule'],$nextRow['typedir'],$nextRow['money'],$nextRow['filename'],$nextRow['moresite'],$nextRow['siteurl'],$nextRow['sitepath']);
-                $this->PreNext['next'] = "下一篇：<a href='$mlink'>{$nextRow['title']}</a> ";
-                $this->PreNext['nextimg'] = "<a href='$mlink'><img src=\"{$nextRow['litpic']}\" alt=\"{$nextRow['title']}\"/></a> ";
-            }
-            else
-            {
-                $this->PreNext['next'] = "下一篇：没有了 ";
-                $this->PreNext['nextimg'] ="<a href='javascript:void(0)' alt=\"\"><img src=\"/templets/default/images/nophoto.jpg\" alt=\"对不起，没有下一图集了！\"/></a>";
-            }
-        }
-        if($gtype=='pre')
-        {
-            $rs =  $this->PreNext['pre'];
-        }
-        else if($gtype=='preimg'){
-            
-            $rs =  $this->PreNext['preimg'];
-        }
-        else if($gtype=='next')
-        {
-            $rs =  $this->PreNext['next'];
-        }
-        else if($gtype=='nextimg'){
-            
-            $rs =  $this->PreNext['nextimg'];
-        }
-        else
-        {
-            $rs =  $this->PreNext['pre']." &nbsp; ".$this->PreNext['next'];
-        }
-        return $rs;
-    }
+
+
+	/**
+	 *	获取上一篇，下一篇链接
+	 *
+	 * @access	  public
+	 * @param	  string  $gtype  获取类型	
+	 *					  pre:上一篇  preurl:上一篇链接	 pretitle:上一篇标题	 preimg:上一篇图片	next:下一篇  nexturl:下一篇链接	 nexttitle:下一篇标题  nextimg:下一篇图片
+	 * @return	  string
+	 */
+	function GetPreNext($gtype='')
+	{
+		$rs = '';
+		if(count($this->PreNext)<2)
+		{
+			$aid = $this->ArcID;
+			$preR =	 $this->dsql->GetOne("Select id From `#@__arctiny` where id<$aid And arcrank>-1 And typeid='{$this->Fields['typeid']}' order by id desc");
+			$nextR = $this->dsql->GetOne("Select id From `#@__arctiny` where id>$aid And arcrank>-1 And typeid='{$this->Fields['typeid']}' order by id asc");
+			$next = (is_array($nextR) ? " where arc.id={$nextR['id']} " : ' where 1>2 ');
+			$pre = (is_array($preR) ? " where arc.id={$preR['id']} " : ' where 1>2 ');
+			$query = "Select arc.id,arc.title,arc.shorttitle,arc.typeid,arc.ismake,arc.senddate,arc.arcrank,arc.money,arc.filename,arc.litpic,
+						t.typedir,t.typename,t.namerule,t.namerule2,t.ispart,t.moresite,t.siteurl,t.sitepath
+						from `#@__archives` arc left join #@__arctype t on arc.typeid=t.id	";
+			$nextRow = $this->dsql->GetOne($query.$next);
+			$preRow = $this->dsql->GetOne($query.$pre);
+			if(is_array($preRow))
+			{
+				$mlink = GetFileUrl($preRow['id'],$preRow['typeid'],$preRow['senddate'],$preRow['title'],$preRow['ismake'],$preRow['arcrank'],
+				$preRow['namerule'],$preRow['typedir'],$preRow['money'],$preRow['filename'],$preRow['moresite'],$preRow['siteurl'],$preRow['sitepath']);
+				$this->PreNext['pre'] = "上一篇：<a href='$mlink'>{$preRow['title']}</a> ";
+				$this->PreNext['preurl']=$mlink;
+				$this->PreNext['pretitle']=$preRow['title'];
+				$this->PreNext['preimg'] = "<a href='$mlink'><img src=\"{$preRow['litpic']}\" alt=\"{$preRow['title']}\"/></a> "; 
+			}
+			else
+			{
+				$this->PreNext['pre'] = "上一篇：没有了 ";
+				$this->PreNext['preurl'] = "javascript:alert('对不起，上一篇没有了！');";
+				$this->PreNext['pretitle'] = "没有了";				
+				$this->PreNext['preimg'] ="<img src=\"/templets/default/images/nophoto.jpg\" alt=\"对不起，没有上一图集了！\"/>";
+			}
+			if(is_array($nextRow))
+			{
+				$mlink = GetFileUrl($nextRow['id'],$nextRow['typeid'],$nextRow['senddate'],$nextRow['title'],$nextRow['ismake'],$nextRow['arcrank'],
+				$nextRow['namerule'],$nextRow['typedir'],$nextRow['money'],$nextRow['filename'],$nextRow['moresite'],$nextRow['siteurl'],$nextRow['sitepath']);
+				$this->PreNext['next'] = "下一篇：<a href='$mlink'>{$nextRow['title']}</a> ";
+				$this->PreNext['nexturl']=$mlink;
+				$this->PreNext['nexttitle']=$nextRow['title'];
+				$this->PreNext['nextimg'] = "<a href='$mlink'><img src=\"{$nextRow['litpic']}\" alt=\"{$nextRow['title']}\"/></a> ";
+			}
+			else
+			{
+				$this->PreNext['next'] = "下一篇：没有了 ";
+				$this->PreNext['nexturl'] = "javascript:alert('对不起，下一篇没有了！');";
+				$this->PreNext['nexttitle'] = "没有了;";
+				$this->PreNext['nextimg'] ="<a href='javascript:void(0)' alt=\"\"><img src=\"/templets/default/images/nophoto.jpg\" alt=\"对不起，没有下一图集了！\"/></a>";
+			}
+		}
+		if($gtype=='pre')
+		{
+			$rs =  $this->PreNext['pre'];
+		}
+		else if($gtype=='preimg'){
+			
+			$rs =  $this->PreNext['preimg'];
+		}
+		else if($gtype=='preurl')
+		{
+			$rs = $this->PreNext['preurl'];
+		}
+		else if($gtype=='pretitle')
+		{
+			$rs = $this->PreNext['pretitle'];
+		}
+		else if($gtype=='nexturl')
+		{
+			$rs = $this->PreNext['nexturl'];
+		}
+		else if($gtype=='nexttitle')
+		{
+			$rs = $this->PreNext['nexttitle'];
+		}
+		else if($gtype=='next')
+		{
+			$rs =  $this->PreNext['next'];
+		}
+		else if($gtype=='nextimg'){
+			
+			$rs =  $this->PreNext['nextimg'];
+		}
+		else
+		{
+			$rs =  $this->PreNext['pre']." &nbsp; ".$this->PreNext['next'];
+		}
+		return $rs;
+	}
+
+
+
+
 
     /**
      *  获得动态页面分页列表
