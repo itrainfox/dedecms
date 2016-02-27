@@ -266,7 +266,7 @@ function SpGetNewInfo()
     $phpv = phpversion();
     $sp_os = PHP_OS;
     $mysql_ver = $dsql->GetVersion();
-    $offUrl = "http://www.de"."decms.com/newinfov57.php?version={$cfg_version}&formurl={$nurl}&phpver={$phpv}&os={$sp_os}&mysqlver={$mysql_ver}";
+    $offUrl = "http://new"."ver.a"."pi.de"."decms.com/index.php?c=info57&version={$cfg_version}&formurl={$nurl}&phpver={$phpv}&os={$sp_os}&mysqlver={$mysql_ver}";
     return $offUrl;
 }
 
