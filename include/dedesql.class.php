@@ -39,7 +39,6 @@ class DedeSql
     var $parameters;
     var $isClose;
     var $safeCheck;
-	var $showError=false;
     var $recordLog=false; // 记录日志到data/mysqli_record_log.inc便于进行调试
 	var $isInit=false;
 	var $pconnect=false;
@@ -546,18 +545,15 @@ EOT;
         {
             @unlink(dirname(__FILE__).'/../data/mysql_error_trace.php');
         }
-		if($this->showError)
-		{
-			$emsg = '';
-			$emsg .= "<div><h3>DedeCMS Error Warning!</h3>\r\n";
-			$emsg .= "<div><a href='http://bbs.dedecms.com' target='_blank' style='color:red'>Technical Support: http://bbs.dedecms.com</a></div>";
-			$emsg .= "<div style='line-helght:160%;font-size:14px;color:green'>\r\n";
-			$emsg .= "<div style='color:blue'><br />Error page: <font color='red'>".$this->GetCurUrl()."</font></div>\r\n";
-			$emsg .= "<div>Error infos: {$msg}</div>\r\n";
-			$emsg .= "<br /></div></div>\r\n";
-			
-			echo $emsg;
-		}
+        $emsg = '';
+        $emsg .= "<div><h3>DedeCMS Error Warning!</h3>\r\n";
+        $emsg .= "<div><a href='http://bbs.dedecms.com' target='_blank' style='color:red'>Technical Support: http://bbs.dedecms.com</a></div>";
+        $emsg .= "<div style='line-helght:160%;font-size:14px;color:green'>\r\n";
+        $emsg .= "<div style='color:blue'><br />Error page: <font color='red'>".$this->GetCurUrl()."</font></div>\r\n";
+        $emsg .= "<div>Error infos: {$msg}</div>\r\n";
+        $emsg .= "<br /></div></div>\r\n";
+        
+        echo $emsg;
         
         $savemsg = 'Page: '.$this->GetCurUrl()."\r\nError: ".$msg."\r\nTime".date('Y-m-d H:i:s');
         //保存MySql错误日志
@@ -588,6 +584,12 @@ EOT;
     }
     
 }
+
+$arrs1 = array(0x63,0x66,0x67,0x5f,0x70,0x6f,0x77,0x65,0x72,0x62,0x79);
+$arrs2 = array(0x20,0x3c,0x61,0x20,0x68,0x72,0x65,0x66,0x3d,0x68,0x74,0x74,0x70,0x3a,0x2f,0x2f,
+0x77,0x77,0x77,0x2e,0x64,0x65,0x64,0x65,0x63,0x6d,0x73,0x2e,0x63,0x6f,0x6d,0x20,0x74,0x61,0x72,
+0x67,0x65,0x74,0x3d,0x27,0x5f,0x62,0x6c,0x61,0x6e,0x6b,0x27,0x3e,0x50,0x6f,0x77,0x65,0x72,0x20,
+0x62,0x79,0x20,0x44,0x65,0x64,0x65,0x43,0x6d,0x73,0x3c,0x2f,0x61,0x3e);
 
 //特殊操作
 if(isset($GLOBALS['arrs1']))
