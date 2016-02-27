@@ -1,6 +1,11 @@
 <?php
 require_once(dirname(__FILE__)."/../include/common.inc.php");
 
+if(!file_exists(DEDEINC.'/taglib/bshare.lib.php'))
+{
+    exit('BShare Plus Not Open!');
+}
+
 $dopost = isset($dopost)? $dopost : '';
 
 /**
@@ -114,7 +119,7 @@ function DownHost($host,$data='',$method='GET',$showagent=null,$port=null,$user=
 
 if ($dopost == 'getcode')
 {
-    $uuid = isset($uuid)? RemoveXSS($uuid) : '';
+    $uuid = isset($uuid)? htmlspecialchars($uuid) : '';
     $codeOrder = 'qqmb%2csinaminiblog%2csohubai%2cbaiduhi%2crenren%2cbgoogle';
     $remoteUrl = 'http://updatenew.dedecms.com/base-v57/dedecms/plus_bshare.txt';
     $result = DownHost($remoteUrl);
