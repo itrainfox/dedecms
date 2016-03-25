@@ -257,7 +257,7 @@ CREATE TABLE `#@__arctype` (
   `typename` char(30) NOT NULL default '',
   `typedir` char(60) NOT NULL default '',
   `isdefault` smallint(6) NOT NULL default '0',
-  `defaultname` char(15) NOT NULL default 'index.html',
+  `defaultname` char(60) NOT NULL default 'index.html',
   `issend` smallint(6) NOT NULL default '0',
   `channeltype` smallint(6) default '1',
   `maxpage` smallint(6) NOT NULL default '-1',
