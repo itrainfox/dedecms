@@ -979,7 +979,7 @@ class ListView
         }
         else
         {
-            $indexpage="<li>首页</li>\r\n";
+            $indexpage="<li><a href=\"javascript:void(0) \" onclick=\"javascript:alert('已经是首页了')\">首页</a></li>\r\n";
             $upurl.="javascript:void(0) \" onclick=\"javascript:alert('没有上一页了')";//上一页链接
         }
 
@@ -992,7 +992,7 @@ class ListView
         }
         else
         {
-            $endpage="<li>末页</li>\r\n";
+            $endpage="<li><a href=\"javascript:void(0) \" onclick=\"javascript:alert('已经是末页了')\">末页</a></li>\r\n";
             $downurl.="javascript:void(0) \" onclick=\"javascript:alert('没有下一页了')";//下一页链接
         }
 
@@ -1125,7 +1125,7 @@ class ListView
         }
         else
         {
-            $indexpage="<li><a>首页</a></li>\r\n";
+            $indexpage="<li><a href=\"javascript:void(0) \" onclick=\"javascript:alert('已经是首页了')\">首页</a></li>\r\n";
             $upurl.="javascript:void(0) \" onclick=\"javascript:alert('没有上一页了')";//上一页链接
         }
         if($this->PageNo!=$totalpage && $totalpage>1)
@@ -1136,7 +1136,7 @@ class ListView
         }
         else
         {
-            $endpage="<li><a>末页</a></li>\r\n";
+            $endpage="<li><a href=\"javascript:void(0) \" onclick=\"javascript:alert('已经是末页了')\">末页</a></li>\r\n";
             $downurl.="javascript:void(0) \" onclick=\"javascript:alert('没有下一页了')";//下一页链接
         }
 
