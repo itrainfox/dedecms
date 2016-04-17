@@ -22,6 +22,8 @@ function showMore()
 	$("#allInfoTD").toggle();
 }
 
+//解决DedeCMS安全提示执行缓慢导致卡死浏览器的问题
+/*
 $(function()
 {
    $.get("index_testenv.php",function(data)
@@ -32,25 +34,11 @@ $(function()
 	}
   })
 })
+*/
 </script>
 </head>
 <body leftmargin="8" topmargin='8' bgcolor="#FFFFFF">
 <div style="min-width:780px">
-<table width="98%" border="0" align="center" cellpadding="0" cellspacing="0">
-  <tr>
-    <td>
-     <div style='float:left'>
-       欢迎使用专业的PHP网站管理系统，轻松建站的首选利器 -- <?php echo $cfg_softname; ?>
-     </div>
-     <div id='' style='float:right;padding-right:8px;'>
-         <!--  //保留位置（顶右）  -->
-     </div>
-   </td>
-  </tr>
-  <tr>
-    <td height="1" background="images/sp_bg.gif" style='padding:0px'></td>
-  </tr>
-</table>
 <div id="__testEvn"></div>
 <div id='mainmsg'>
   <div class="column" id="column1"><!--左侧开始-->    

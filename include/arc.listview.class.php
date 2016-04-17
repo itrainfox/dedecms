@@ -945,7 +945,7 @@ class ListView
      * @param     string  $list_len  列表样式
      * @return    string
      */
-    function GetPageListST($list_len,$listitem="index,end,pre,next,pageno,downurl,upurl,allnum")
+    function GetPageListST($list_len,$listitem="index,end,pre,next,pageno,nexturl,preurl,allnum")
     {
         $prepage = $nextpage = '';
         $prepagenum = $this->PageNo-1;
@@ -975,12 +975,12 @@ class ListView
         {
             $prepage.="<li><a href='".str_replace("{page}",$prepagenum,$tnamerule)."'>上一页</a></li>\r\n";
             $indexpage="<li><a href='".str_replace("{page}",1,$tnamerule)."'>首页</a></li>\r\n";
-            $upurl.="".str_replace("{page}",$prepagenum,$tnamerule)."";//上一页链接
+            $preurl.="".str_replace("{page}",$prepagenum,$tnamerule)."";//上一页链接
         }
         else
         {
             $indexpage="<li><a href=\"javascript:void(0) \" onclick=\"javascript:alert('已经是首页了')\">首页</a></li>\r\n";
-            $upurl.="javascript:void(0) \" onclick=\"javascript:alert('没有上一页了')";//上一页链接
+            $preurl.="javascript:void(0) \" onclick=\"javascript:alert('没有上一页了')";//上一页链接
         }
 
         //下一页,未页的链接
@@ -988,12 +988,12 @@ class ListView
         {
             $nextpage.="<li><a href='".str_replace("{page}",$nextpagenum,$tnamerule)."'>下一页</a></li>\r\n";
             $endpage="<li><a href='".str_replace("{page}",$totalpage,$tnamerule)."'>末页</a></li>\r\n";
-            $downurl.="".str_replace("{page}",$nextpagenum,$tnamerule)."";//下一页链接
+            $nexturl.="".str_replace("{page}",$nextpagenum,$tnamerule)."";//下一页链接
         }
         else
         {
             $endpage="<li><a href=\"javascript:void(0) \" onclick=\"javascript:alert('已经是末页了')\">末页</a></li>\r\n";
-            $downurl.="javascript:void(0) \" onclick=\"javascript:alert('没有下一页了')";//下一页链接
+            $nexturl.="javascript:void(0) \" onclick=\"javascript:alert('没有下一页了')";//下一页链接
         }
 
         //option链接
@@ -1062,8 +1062,8 @@ class ListView
         if(preg_match('/end/i', $listitem)) $plist .= $endpage;
         if(preg_match('/option/i', $listitem)) $plist .= $optionlist;
         if(preg_match('/info/i', $listitem)) $plist .= $maininfo;
-        if(preg_match('/upurl/i', $listitem)) $plist .= $upurl;//上一页链接
-        if(preg_match('/downurl/i', $listitem)) $plist .= $downurl;//下一页链接
+        if(preg_match('/preurl/i', $listitem)) $plist .= $preurl;//上一页链接
+        if(preg_match('/nexturl/i', $listitem)) $plist .= $nexturl;//下一页链接
         if(preg_match('/allnum/i', $listitem)) $plist .= $allnum;//总页面数字
         if(preg_match('/thisnum/i', $listitem)) $plist .= $thisnum;//当前页面数字
         
@@ -1078,7 +1078,7 @@ class ListView
      * @param     string  $list_len  列表样式
      * @return    string
      */
-    function GetPageListDM($list_len,$listitem="index,end,pre,next,pageno,downurl,upurl,allnum")
+    function GetPageListDM($list_len,$listitem="index,end,pre,next,pageno,nexturl,preurl,allnum")
     {
         global $cfg_rewrite;
         $prepage = $nextpage = '';
@@ -1121,23 +1121,23 @@ class ListView
         {
             $prepage.="<li><a href='".$purl."PageNo=$prepagenum'>上一页</a></li>\r\n";
             $indexpage="<li><a href='".$purl."PageNo=1'>首页</a></li>\r\n";
-            $upurl.="".$purl."PageNo=$prepagenum";//上一页链接
+            $preurl.="".$purl."PageNo=$prepagenum";//上一页链接
         }
         else
         {
             $indexpage="<li><a href=\"javascript:void(0) \" onclick=\"javascript:alert('已经是首页了')\">首页</a></li>\r\n";
-            $upurl.="javascript:void(0) \" onclick=\"javascript:alert('没有上一页了')";//上一页链接
+            $preurl.="javascript:void(0) \" onclick=\"javascript:alert('没有上一页了')";//上一页链接
         }
         if($this->PageNo!=$totalpage && $totalpage>1)
         {
             $nextpage.="<li><a href='".$purl."PageNo=$nextpagenum'>下一页</a></li>\r\n";
             $endpage="<li><a href='".$purl."PageNo=$totalpage'>末页</a></li>\r\n";
-            $downurl.="".$purl."PageNo=$nextpagenum";//下一页链接
+            $nexturl.="".$purl."PageNo=$nextpagenum";//下一页链接
         }
         else
         {
             $endpage="<li><a href=\"javascript:void(0) \" onclick=\"javascript:alert('已经是末页了')\">末页</a></li>\r\n";
-            $downurl.="javascript:void(0) \" onclick=\"javascript:alert('没有下一页了')";//下一页链接
+            $nexturl.="javascript:void(0) \" onclick=\"javascript:alert('没有下一页了')";//下一页链接
         }
 
         //获得数字链接
@@ -1185,8 +1185,8 @@ class ListView
         if(preg_match('/end/i', $listitem)) $plist .= $endpage;
         if(preg_match('/option/i', $listitem)) $plist .= $optionlist;
         if(preg_match('/info/i', $listitem)) $plist .= $maininfo;
-        if(preg_match('/upurl/i', $listitem)) $plist .= $upurl;//上一页链接
-        if(preg_match('/downurl/i', $listitem)) $plist .= $downurl;//下一页链接
+        if(preg_match('/preurl/i', $listitem)) $plist .= $preurl;//上一页链接
+        if(preg_match('/nexturl/i', $listitem)) $plist .= $nexturl;//下一页链接
         if(preg_match('/allnum/i', $listitem)) $plist .= $allnum;//总页面数字
         if(preg_match('/thisnum/i', $listitem)) $plist .= $thisnum;//当前页面数字
         

@@ -3974,6 +3974,7 @@ INSERT INTO `#@__sysconfig` VALUES
 (5,	'cfg_indexurl',	'网页主页链接',	1,	'string',	'/'),
 (6,	'cfg_beian',	'网站备案号',	1,	'string',	''),
 (7,	'cfg_powerby',	'网站版权信息',	1,	'bstring',	'Copyright &copy; 2002-2016'),
+(8,	'cfg_kefu',	'客服链接',	1,	'string',	''),
 /* SEO设置 */
 (1,	'cfg_keywords',	'站点默认关键字',	2,	'string',	''),
 (2,	'cfg_description',	'站点描述',	2,	'bstring',	''),

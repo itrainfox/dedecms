@@ -837,7 +837,7 @@ class Archives
 			{
 				$this->PreNext['next'] = "下一篇：没有了 ";
 				$this->PreNext['nexturl'] = "javascript:alert('对不起，下一篇没有了！');";
-				$this->PreNext['nexttitle'] = "没有了;";
+				$this->PreNext['nexttitle'] = "没有了";
 				$this->PreNext['nextimg'] ="<a href='javascript:void(0)' alt=\"\"><img src=\"/templets/default/images/nophoto.jpg\" alt=\"对不起，没有下一图集了！\"/></a>";
 			}
 		}
