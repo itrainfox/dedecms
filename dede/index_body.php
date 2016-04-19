@@ -247,12 +247,12 @@ exit;
     exit;
 } else if ($dopost=='showad')
 {
-    include('templets/index_body_showad.htm');
+    include('templets/index_body_stafrm.htm');
     exit;
 } else if($dopost=='setskin')
 {
-	$cskin = empty($cskin)? 1 : $cskin;
-	$skin = !in_array($cskin, array(1,2,3,4))? 1 : $cskin;
+	$cskin = empty($cskin)? 2 : $cskin;
+	$skin = !in_array($cskin, array(1,2,3,4))? 2 : $cskin;
 	$skinconfig = DEDEDATA.'/admin/skin.txt';
 	PutFile($skinconfig, $skin);
 }

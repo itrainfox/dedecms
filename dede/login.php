@@ -79,12 +79,12 @@ if($dopost=='login')
                 $cuserLogin->keepUser();
                 if(!empty($gotopage))
                 {
-                    ShowMsg('成功登录，正在转向管理管理主页！',$gotopage);
+                    ShowMsg('成功登录，正在转向后台页面！',$gotopage);
                     exit();
                 }
                 else
                 {
-                    ShowMsg('成功登录，正在转向管理管理主页！',"index.php");
+                    ShowMsg('成功登录，正在转向管理主页！',"index.php");
                     exit();
                 }
             }
@@ -93,13 +93,13 @@ if($dopost=='login')
             else if($res==-1)
             {
                 ResetVdValue();
-				ShowMsg('你的用户名不存在!','login.php',0,1000);
+				ShowMsg('你的用户名或密码错误!','login.php',0,1000);
 				exit;
             }
             else
             {
                 ResetVdValue();
-                ShowMsg('你的密码错误!','login.php',0,1000);
+                ShowMsg('你的用户名或密码错误','login.php',0,1000);
 				exit;
             }
         }
@@ -108,7 +108,7 @@ if($dopost=='login')
         else
         {
             ResetVdValue();
-            ShowMsg('用户和密码没填写完整!','login.php',0,1000);
+            ShowMsg('用户名和密码不能为空!','login.php',0,1000);
 			exit;
         }
     }

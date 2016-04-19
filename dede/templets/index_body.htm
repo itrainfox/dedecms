@@ -39,9 +39,85 @@ $(function()
 </head>
 <body leftmargin="8" topmargin='8' bgcolor="#FFFFFF">
 <div style="min-width:780px">
-<div id="__testEvn"></div>
 <div id='mainmsg'>
-  <div class="column" id="column1"><!--左侧开始-->    
+    <div class="column" id="column1" ><!-- // 左侧开始 -->
+        <dl class='dbox' id="item3">
+			<dt class='lside'>
+				<div class='l'>快捷操作</div>
+				<div class='r'><a href='#' onClick="AddNew()"><b>【新增】</b></a><a href='#' onClick="ListAll()"><b>【管理】</b></a></div>
+			</dt>
+			<dd>
+				<div id='quickmenu'>
+					<?php
+						$dtp = new DedeTagparse();
+						$dtp->SetNameSpace('menu','<','>');
+						$dtp->LoadTemplet($myIcoFile);
+						if(is_array($dtp->CTags)){
+							foreach($dtp->CTags as $ctag){
+								$title = $ctag->GetAtt('title');
+								$ico = $ctag->GetAtt('ico');
+								$link = $ctag->GetAtt('link');
+								echo "<div class='icoitem' style='background:url($ico) 10px 3px no-repeat;'><a href='{$link}'>{$title}</a></div>\r\n";
+							}
+						}
+					?>
+				</div>
+			</dd>
+		</dl><!--快捷操作结束-->
+		<dl class='dbox' id="item6">
+            <dt class='lside'><div class='l'>信息统计</div></dt>
+            <dd id='listCount'>
+                正在载入中...
+            </dd>
+        </dl><!--信息统计结束-->
+        <dl class='dbox' id="item7">
+            <dt class='lside'><div class='l'>最新文档</div></dt>
+            <dd id='listNews'>
+<?php
+    $query = "SELECT arc.id, arc.arcrank, arc.title, arc.channel, ch.editcon  FROM `#@__archives` arc
+            LEFT JOIN `#@__channeltype` ch ON ch.id = arc.channel
+             WHERE arc.arcrank<>-2 ORDER BY arc.id DESC LIMIT 0, 7 ";
+    $arcArr = array();
+    $dsql->Execute('m', $query);
+    while($row = $dsql->GetArray('m'))
+    {
+        $arcArr[] = $row;
+    }
+?>
+    <table width="100%" class="dboxtable">
+    <?php
+    if(count($arcArr) > 1)
+    {
+        foreach($arcArr as $row)
+        {
+            if(trim($row['editcon'])=='') {
+                $row['editcon'] = 'archives_edit.php';
+            }
+            $linkstr = "·<a href='{$row['editcon']}?aid={$row['id']}&channelid={$row['channel']}'>{$row['title']}</a>";
+            if($row['arcrank']==-1) $linkstr .= "<font color='red'>(未审核)</font>";
+        ?>
+        <tr>
+            <td class='nline'  style="text-align:left">
+                <?php echo $linkstr; ?>
+            </td>
+        </tr>
+        <?php
+        }
+    } else {
+    ?>
+        <tr>
+            <td class='nline'  style="text-align:left">
+                暂无新增内容
+            </td>
+        </tr>
+    <?php
+    }
+    ?>
+    </table>
+            </dd>
+        </dl><!--最新文档结束-->
+    </div><!--左侧结束-->
+  <div class="column" id="column2"><!--右侧开始-->    
         <dl class="dbox" id="item1">
             <dt class='lside'><span class='l'><?php echo $cfg_soft_enname; ?> 更新消息</span></dt>
             <dd>
@@ -51,7 +127,7 @@ $(function()
                             echo "<div class='updatedvt'><b>您系统版本最后更新时间为：{$oktime} </b><br/>";
                             echo " <a href='javascript:LoadUpdateInfos();' class='np coolbg'>进行在线更新</a> &nbsp; \r\n";
                             echo " <a href='sys_repair.php' class='np coolbg'>系统错误修复</a></div>\r\n";
-                            echo "<iframe name='stafrm' src='{$offUrl}&uptime={$oktime}' frameborder='0' id='stafrm' width='98%' height='50'></iframe>";
+                            echo "<iframe name='stafrm' src='index_body.php?dopost=stafrm' frameborder='0' scrolling='no' width='98%' height='50'></iframe>";
                         ?>
                     </div>
                  </div>
@@ -62,31 +138,7 @@ $(function()
             <dd>               
                 <iframe name="showauth" src="index_body.php?dopost=showauth" width="100%" frameborder="0" scrolling="no" marginwidth="10" marginheight="10" id="showauth"></iframe>                
             </dd>
-        </dl><!--更新消息结束-->
-        <dl class='dbox' id="item3">
-            <dt class='lside'>
-                <div class='l'>快捷操作</div>
-                <div class='r'><a href='#' onClick="AddNew()"><b>【新增】</b></a><a href='#' onClick="ListAll()"><b>【管理】</b></a></div>
-            </dt>
-            <dd>
-                <div id='quickmenu'>
-                    <?php
-                        $dtp = new DedeTagparse();
-                        $dtp->SetNameSpace('menu','<','>');
-                        $dtp->LoadTemplet($myIcoFile);
-                        if(is_array($dtp->CTags)){
-                            foreach($dtp->CTags as $ctag){
-                                $title = $ctag->GetAtt('title');
-                                $ico = $ctag->GetAtt('ico');
-                                $link = $ctag->GetAtt('link');
-                                echo "<div class='icoitem' style='background:url($ico) 10px 3px no-repeat;'><a href='{$link}'>{$title}</a></div>\r\n";
-                            }
-                        }
-                    ?>
-                </div>
-            </dd>
-
-        </dl><!--快捷操作结束-->   
+        </dl><!--更新消息结束-->   
         <dl class="dbox" id="item4">
             <dt class='lside'><div class='l'>系统基本信息</div></dt>
             <dd class='intable'>
@@ -96,7 +148,7 @@ $(function()
                         <td class='nline'>
                             <?php
                                 if($cuserLogin->getUserType()==10) {
-                                    echo "总管理员";
+                                    echo "系统管理员";
                             } else if($cuserLogin->getUserType()==5) {
                                 echo "频道总编";
                             } else {
@@ -115,9 +167,9 @@ $(function()
                         <td class='nline' style="text-align:left">是否安全模式：<font color='red'><?php echo ($isSafeMode ? 'On' : 'Off')?></font>
                             <?php
                                 if($isSafeMode) {
-                                    echo "<br>　　<font color='blue'>由于您的系统以安全模式运行，为了确保程序兼容性，第一次进入本系统时请更改“<a href='sys_info.php'><u>更改系统参数</u></a>”里的FTP选项，并选择用FTP形式创建目录，完成后：<a href='testenv.php' style='color:red'><u>点击此进行一次DedeCms目录权限检测&gt;&gt;</u></a></font>";
+                                    echo "<br>　　<font color='blue'>由于您的系统以安全模式运行，为了确保程序兼容性，第一次进入本系统时请更改“<a href='sys_info.php'><u>更改系统参数</u></a>”里的FTP选项，并选择用FTP形式创建目录，完成后：<a href='testenv.php' style='color:red'><u>点击此对网站系统进行一次目录权限检测&gt;&gt;</u></a></font>";
                                 } else {
-                                    echo "　<a href='testenv.php' style='color:blue'><u>DedeCMS目录权限检测&gt;&gt;</u></a></font>";
+                                    echo "　<a href='testenv.php' style='color:blue'><u>网站系统目录权限检测&gt;&gt;</u></a></font>";
                                 }
                             ?>
                         </td>
@@ -178,67 +230,7 @@ $(function()
                 </table>
             </dd>
         </dl><!--开发团队结束-->
-    </div><!--左侧结束-->
-    <div class="column" id="column2" ><!-- //右边的快捷消息开始 -->
-        <dl class='dbox' id="item8">
-            <dt class='lside'><div class='l'>赞助商链接(<a href="http://ad.dedecms.com/ad/" target="_blank">说明</a>)</div></dt>
-            <dd>
-                <iframe name="showad" src="index_body.php?dopost=showad" frameborder="0" width="100%" id="showad" frameborder="0" scrolling="no"  marginheight="5"></iframe>
-            </dd>
-        </dl><!--赞助商链接结束-->
-        <dl class='dbox' id="item6">
-            <dt class='lside'><div class='l'>信息统计</div></dt>
-            <dd id='listCount'>
-                正在载入中...
-            </dd>
-        </dl><!--信息统计结束-->
-        <dl class='dbox' id="item7">
-            <dt class='lside'><div class='l'>最新文档</div></dt>
-            <dd id='listNews'>
-<?php
-    $query = "SELECT arc.id, arc.arcrank, arc.title, arc.channel, ch.editcon  FROM `#@__archives` arc
-            LEFT JOIN `#@__channeltype` ch ON ch.id = arc.channel
-             WHERE arc.arcrank<>-2 ORDER BY arc.id DESC LIMIT 0, 6 ";
-    $arcArr = array();
-    $dsql->Execute('m', $query);
-    while($row = $dsql->GetArray('m'))
-    {
-        $arcArr[] = $row;
-    }
-?>
-    <table width="100%" class="dboxtable">
-    <?php
-    if(count($arcArr) > 1)
-    {
-        foreach($arcArr as $row)
-        {
-            if(trim($row['editcon'])=='') {
-                $row['editcon'] = 'archives_edit.php';
-            }
-            $linkstr = "·<a href='{$row['editcon']}?aid={$row['id']}&channelid={$row['channel']}'>{$row['title']}</a>";
-            if($row['arcrank']==-1) $linkstr .= "<font color='red'>(未审核)</font>";
-        ?>
-        <tr>
-            <td class='nline'  style="text-align:left">
-                <?php echo $linkstr; ?>
-            </td>
-        </tr>
-        <?php
-        }
-    } else {
-    ?>
-        <tr>
-            <td class='nline'  style="text-align:left">
-                暂无新增内容
-            </td>
-        </tr>
-    <?php
-    }
-    ?>
-    </table>
-            </dd>
-        </dl><!--最新文档结束-->
-    </div>
+    </div><!--右侧结束-->
 </div>
 <br style='clear:both'/>
 <!-- //底部 -->
